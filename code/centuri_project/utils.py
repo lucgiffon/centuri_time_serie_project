@@ -9,9 +9,10 @@ interim_directory = project_dir / pathlib.Path("data/interim")
 processed_directory = project_dir / pathlib.Path("data/processed")
 
 
-def save_data_to_folder(signal_times, sampling_rates, signal, labels, filename, folder_path):
+def save_data_to_folder(names, signal_times, sampling_rates, signals, labels, filename, folder_path):
     np.savez(folder_path / filename,
+             names=names,
              signal_times=signal_times,
              sampling_rates=sampling_rates,
-             signals=signal,
+             signals=signals,
              labels=labels)

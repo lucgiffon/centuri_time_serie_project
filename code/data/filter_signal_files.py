@@ -92,7 +92,7 @@ def process_abf_data(abf_data, ax=None):
 def process_asc_file(file, signal_size, signal_sampling_rate, ax=None):
     """
     Read asc file in pandas dataframe and extract fields of interest:
-        * idx 1: time of events
+        * idx 1: time of events -> converted to one hot over all sampling times
         * idx 2: amplitudes of events
         * idx 6: baselines of events
 
@@ -124,19 +124,20 @@ def process_asc_file(file, signal_size, signal_sampling_rate, ax=None):
 
     return cube_events
 
-if __name__ == "__main__":
+def get_filtered_signals():
     abf_train_files = [file for file in raw_data_directory.glob("**/*") if file.is_file()]
-
 
     lst_test = {}
     lst_test["signals"] = []
     lst_test["signals_times"] = []
     lst_test["sampling_rates"] = []
+    lst_test["names"] = []
     lst_train = {}
     lst_train["signals"] = []
     lst_train["signals_times"] = []
     lst_train["cube_labels"] = []
     lst_train["sampling_rates"] = []
+    lst_train["names"] = []
     for file in abf_train_files:
         if file.suffix.upper() == ".ABF":
             abf_file = file
@@ -150,6 +151,7 @@ if __name__ == "__main__":
             lst_test["signals"].append(filtered_abf_data_Y)
             lst_test["signals_times"].append(abf_data.sweepX)
             lst_test["sampling_rates"].append(sampling_rate)
+            lst_test["names"].append(abf_file.stem)
 
         elif file.suffix.upper() == ".ASC":
             f, ax = plt.subplots()
@@ -171,6 +173,8 @@ if __name__ == "__main__":
             lst_train["signals_times"].append(abf_data.sweepX)
             lst_train["cube_labels"].append(cube_labels)
             lst_train["sampling_rates"].append(sampling_rate)
+            lst_train["names"].append(abf_file.stem)
+
 
             # vizualization settings
             time_win_mean = 0.5
@@ -186,19 +190,27 @@ if __name__ == "__main__":
             by_label = OrderedDict(zip(labels, handles))
 
             plt.legend(by_label.values(), by_label.keys())
-            plt.show()
+            # plt.show()
 
         else:
             raise ValueError("Unknown file")
 
-    save_data_to_folder(np.stack(lst_train["signals_times"], axis=0),
-                        np.array(lst_train["sampling_rates"]),
-                        np.stack(lst_train["signals"], axis=0),
-                        np.stack(lst_train["cube_labels"], axis=0),
-                        "train", interim_directory)
-    save_data_to_folder(np.stack(lst_test["signals_times"], axis=0),
-                        np.array(lst_train["sampling_rates"]),
-                        np.stack(lst_test["signals"], axis=0),
-                        None,
-                        "test", interim_directory)
+    train_data = {
+        "signal_times": np.stack(lst_train["signals_times"], axis=0),
+        "sampling_rates": np.array(lst_train["sampling_rates"]),
+        "signals": np.stack(lst_train["signals"], axis=0),
+        "labels": np.stack(lst_train["cube_labels"], axis=0),
+        "names": np.array(lst_train["names"])
+    }
+
+    test_data = {
+        "signal_times": np.stack(lst_test["signals_times"], axis=0),
+        "sampling_rates": np.array(lst_train["sampling_rates"]),
+        "signals": np.stack(lst_test["signals"], axis=0),
+        "labels": None,
+        "names": np.array(lst_test["names"])
+    }
+
+    return train_data, test_data
+
 

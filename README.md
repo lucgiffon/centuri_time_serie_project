@@ -20,14 +20,13 @@ and rename it `1_time_series_analysis`.
 
 Go to the `/code/data` directory then execute the file `filter_signal_files.py` then the file `cut_signal_in_sweeps.py`.
 
-	python filter_signal_files.py
-	python cut_signal_in_sweeps.py
+	python process_data.py
 	
 To make sure everything has been done properly, go to the `/code/vizualiation` directory then execute the `show_data_sweeps.py` file.
 
 	python show_data_sweeps.py
 
-If there is no error, everything is fine.
+If everything is fine, there should be no error and few plots should show up (around 5).
 
 # Start coding
 

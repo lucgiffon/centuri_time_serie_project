@@ -33,3 +33,8 @@ If everything is fine, there should be no error and few plots should show up (ar
 If you want to code something new for the project. 
 Go to the `/code/centuri_project` directory and look at the file `load_data_example.py` to see how to load the data.
 All your new code files must go under the `/code/centuri_project` directory.
+
+## Play with windows of signal
+
+If you want to play with labeled windows of signal, check out the script `code/centuri_project/classification/sgd_example.py` to see 
+how to load the windows from the signal data files.

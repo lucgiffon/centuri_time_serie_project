@@ -6,7 +6,7 @@ import sys
 NAME = 'centuri_project'
 DESCRIPTION = 'spike detection'
 LICENSE = 'GNU General Public License v3 (GPLv3)'
-INSTALL_REQUIRES = ['numpy', 'daiquiri', 'matplotlib', 'pandas', 'keras', 'docopt', 'scipy']  # TODO to be completed
+INSTALL_REQUIRES = ['numpy', 'daiquiri', 'matplotlib', 'pandas', 'keras', 'docopt', 'scipy', 'scikit-learn']  # TODO to be completed
 
 PYTHON_REQUIRES = '>=3.5'
 

@@ -1,9 +1,8 @@
-from centuri_project.utils import processed_directory
+from centuri_project.utils import processed_directory, evaluate_labels
 import numpy as np
 import matplotlib.pyplot as plt
 import math
 from sklearn import preprocessing
-from sklearn.preprocessing import StandardScaler
 from numpy import linalg as LA
 import operator
 
@@ -99,30 +98,6 @@ def optimise_label(sequence,label):
                 opt_labels[zero_ind]=0
     return opt_labels
 
-def evaluate_labels(labels,bench,win_size):
-    half_win_size=math.ceil(win_size/2)
-    
-    #compute false negative (there should be but not detected)
-    FN=0
-    #time points of events in the benchmark labels
-    indices_bench = [i for i, x in enumerate(bench) if x == 1]
-    half_win_size=10
-    for ind_bench in indices_bench:
-        check_labels=labels[max(0,ind_bench-half_win_size):min(len(bench),ind_bench+half_win_size)]
-        if 1 not in check_labels:
-            FN=FN+1
-
-    #compute false positive (there should not be but detected)
-    FP=0
-    #time points of events in the benchmark labels
-    indices_label = [i for i, x in enumerate(labels) if x == 1]
-    for ind_label in indices_label:
-        check_bench=bench[max(0,ind_label-half_win_size):min(len(labels),ind_label+half_win_size)]
-        if 1 not in check_bench:
-            FP=FP+1
-
-    return FN, FP
-
 
 #generate a grid for a range of window sizes and thresholds
 #para_x=[min_x,max_x,num_x]
@@ -198,7 +173,7 @@ if __name__ == "__main__":
                 plt.show()
 
                 #Evaluate the computed labels
-                FN,FP = evaluate_labels(opt_labels,bench,win_size)
+                FN,FP = evaluate_labels(opt_labels, bench, win_size=10)
                 FNs[i][j]=FN
                 FPs[i][j]=FP
                 # print('false negative: {} - false positive: {}'.format(FN, FP))

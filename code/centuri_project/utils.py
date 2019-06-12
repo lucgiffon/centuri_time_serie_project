@@ -198,3 +198,69 @@ def evaluate_labels(labels,bench,win_size):
             FP=FP+1
 
     return FN, FP
+
+
+TEST_NAMES = ['2019_02_27_02-sEPSC', '2017_08_04_00-sEPSC']
+
+
+def prepare_train_data():
+    data_file = processed_directory / "splitted_train_with_annotations.npz"  # all train data with annotations
+    data = np.load(data_file, allow_pickle=True)
+    data_signal_values = data["signals"]  # for all trace the value records (n x d matrix): the actual traces we need to deal with
+    data_labels = data["labels"]  # for all trace, the event presence (as 1/0 vector), the event amplitude and the baseline (n x 3 x d cube of data)
+    data_names = data["names"]
+
+    mapping = {}
+    for i in np.unique(data_names):
+        mapping[i] = np.where(data_names == i)[0]
+
+
+
+    # remove a portion of labeled samples so that we can later evaluate event detection
+    test_indices = [item for sublist in [mapping[tst_na] for tst_na in TEST_NAMES] for item in sublist]
+    # data_signal_values_test = data_signal_values[test_indices]
+    # data_labels_test = data_labels[test_indices]
+
+    train_indices = list(set(range(data_signal_values.shape[0])) - set(test_indices))
+    data_signal_values = data_signal_values[train_indices]
+    data_labels = data_labels[train_indices]
+    return data_signal_values, data_labels
+
+
+def prepare_test_data():
+    data_file = processed_directory / "splitted_train_with_annotations.npz"  # all train data with annotations
+    data = np.load(data_file, allow_pickle=True)
+    data_signal_values = data["signals"]  # for all trace the value records (n x d matrix): the actual traces we need to deal with
+    data_labels = data["labels"]  # for all trace, the event presence (as 1/0 vector), the event amplitude and the baseline (n x 3 x d cube of data)
+    data_names = data["names"]
+
+    mapping = {}
+    for i in np.unique(data_names):
+        mapping[i] = np.where(data_names == i)[0]
+
+    # remove a portion of labeled samples so that we can later evaluate event detection
+    test_indices = [item for sublist in [mapping[tst_na] for tst_na in TEST_NAMES] for item in sublist]
+    data_signal_values_test = data_signal_values[test_indices].astype(np.float)
+    data_labels_test = data_labels[test_indices]
+    return data_signal_values_test, data_labels_test
+
+
+def rle(inarray):
+        """
+        https://stackoverflow.com/questions/1066758/find-length-of-sequences-of-identical-values-in-a-numpy-array-run-length-encodi
+
+        run length encoding. Partial credit to R rle function.
+            Multi datatype arrays catered for including non Numpy
+            returns: tuple (runlengths, startpositions, values) """
+        ia = np.asarray(inarray)                  # force numpy
+        n = len(ia)
+        if n == 0:
+            return (None, None, None)
+        else:
+            y = np.array(ia[1:] != ia[:-1])     # pairwise unequal (string safe)
+            i = np.append(np.where(y), n - 1)   # must include last element posi
+            z = np.diff(np.append(-1, i))       # run lengths
+            p = np.cumsum(np.append(0, z))[:-1] # positions
+            p_pairs = [(p[i], p[i+1]) for i, _ in enumerate(p[:-1])]
+            p_pairs.append((p[-1], len(ia)))
+            return(z, p_pairs, ia[i])

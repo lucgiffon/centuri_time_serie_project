@@ -24,22 +24,19 @@ Data:
 
 """
 
-import random
 import time
 import sys
 import docopt
-import pathlib
 
 import keras
-from keras import Sequential, Input, Model
-from keras.layers import Reshape, Conv1D, MaxPooling1D, GlobalAveragePooling1D, Dropout, Dense, Flatten
+from keras import Input, Model
+from keras.layers import Conv1D, MaxPooling1D, Dropout, Dense, Flatten
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from scipy.signal import detrend
-from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 
-from centuri_project.utils import processed_directory, get_dataset_of_windows, project_dir, ParameterManager, ResultPrinter
+from centuri_project.utils import get_dataset_of_windows, project_dir, ParameterManager, ResultPrinter, prepare_train_data
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
@@ -74,26 +71,7 @@ if __name__ == "__main__":
 
     try:
 
-        data_file = processed_directory / "splitted_train_with_annotations.npz"  # all train data with annotations
-        data = np.load(data_file, allow_pickle=True)
-        data_signal_values = data["signals"]  # for all trace the value records (n x d matrix): the actual traces we need to deal with
-        data_labels = data["labels"]  # for all trace, the event presence (as 1/0 vector), the event amplitude and the baseline (n x 3 x d cube of data)
-        data_names = data["names"]
-
-        mapping = {}
-        for i in np.unique(data_names):
-            mapping[i] = np.where(data_names == i)[0]
-
-        test_names = ['2019_02_27_02-sEPSC', '2017_08_04_00-sEPSC']
-
-        # remove a portion of labeled samples so that we can later evaluate event detection
-        test_indices = [item for sublist in [mapping[tst_na] for tst_na in test_names] for item in sublist]
-        data_signal_values_test = data_signal_values[test_indices]
-        data_labels_test = data_labels[test_indices]
-
-        train_indices = list(set(range(data_signal_values.shape[0])) - set(test_indices))
-        data_signal_values = data_signal_values[train_indices]
-        data_labels = data_labels[train_indices]
+        data_signal_values, data_labels = prepare_train_data()
 
         window_size = paraman["--window-size"]  # The size of each window (signal cut)
         attention_span = paraman["--attention-span-size"]  # The attention span in which to look for events in each window

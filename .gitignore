@@ -1,7 +1,10 @@
-# numpy data
 *.npz
 CENTURI Summer School/
 data/raw/*
+arrayparam*txt
+*.tgz
+*.h5
+*.csv
 
 # Pycharm
 .idea

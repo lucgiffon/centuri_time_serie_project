@@ -1,3 +1,4 @@
+from scipy.signal import detrend
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 
@@ -36,6 +37,7 @@ if __name__ == "__main__":
     step_between_windows = 20  # the step size between each first index of windows
     X, y = get_dataset_of_windows(data_signal_values, data_labels, window_size, step_between_windows, attention_span)
     X = normalize(X, axis=1)  # highly recommended
+    X = detrend(X)  # make the signals trend horizontal
 
     # train val split is necessary to evaluate classification
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.33, random_state=42)

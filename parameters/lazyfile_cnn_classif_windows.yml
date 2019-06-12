@@ -1,0 +1,13 @@
+all:
+  cnn:
+
+cnn:
+  nb_filter_conv_1: {"--nb-filter-conv-1": [16, 32, 64]}
+  nb_filter_conv_2: {"--nb-filter-conv-2": [16, 32, 64]}
+  size_conv_1: {"--size-filter-conv-1": [16, 32, 64]}
+  size_conv_2: {"--size-filter-conv-2": [16, 32, 64]}
+  size_dense: {"--size-dense": [32, 64, 128]}
+  learning_rate: {"--learning-rate": [1e-2, 1e-3, 1e-4]}
+  window_size: {"--window-size": [200, 300, 400]}
+  attention_span: {"--attention-span-size": [100, 200, 300]}
+  step_size: {"--step-size": [20]}

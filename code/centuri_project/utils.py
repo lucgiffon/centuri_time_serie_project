@@ -8,6 +8,9 @@ raw_data_directory = project_dir / pathlib.Path("data/raw/1_time_series_analysis
 interim_directory = project_dir / pathlib.Path("data/interim")
 processed_directory = project_dir / pathlib.Path("data/processed")
 
+trained_models_directory = project_dir / "models/trained"
+
+results_directory = project_dir / "results"
 
 def save_data_to_folder(names, signal_times, sampling_rates, signals, labels, filename, folder_path):
     np.savez(folder_path / filename,
@@ -108,3 +111,64 @@ def get_dataset_of_windows(data_signal_values, data_labels, window_size, step_be
     else:
         indexes = np.arange(windowed_data.shape[0])
     return windowed_data[indexes], windowed_labels[indexes]
+
+class ResultPrinter:
+    """
+    Class that handles 1-level dictionnaries and is able to print/write their values in a csv like format.
+    """
+    def __init__(self, *args, header=True, output_file=None):
+        """
+        :param args: the dictionnaries objects you want to print.
+        :param header: tells if you want to print the header
+        :param output_file: path to the outputfile. If None, no outputfile is written on ResultPrinter.print()
+        """
+        self.__dict = dict()
+        self.__header = header
+        self.__output_file = output_file
+
+    def add(self, d):
+        """
+        Add dictionnary after initialisation.
+
+        :param d: the dictionnary object you want to add.
+        :return:
+        """
+        self.__dict.update(d)
+
+    def _get_ordered_items(self):
+        all_keys, all_values = zip(*self.__dict.items())
+        arr_keys, arr_values = np.array(all_keys), np.array(all_values)
+        indexes_sort = np.argsort(arr_keys)
+        return list(arr_keys[indexes_sort]), list(arr_values[indexes_sort])
+
+    def print(self):
+        """
+        Call this function whener you want to print/write to file the content of the dictionnaires.
+        :return:
+        """
+        headers, values = self._get_ordered_items()
+        headers = [str(h) for h in headers]
+        s_headers = ",".join(headers)
+        values = [str(v) for v in values]
+        s_values = ",".join(values)
+        if self.__header:
+            print(s_headers)
+        print(s_values)
+        if self.__output_file is not None:
+            with open(self.__output_file, "w+") as out_f:
+                if self.__header:
+                    out_f.write(s_headers + "\n")
+                out_f.write(s_values + "\n")
+
+class ParameterManager(dict):
+    def __init__(self, dct_params, **kwargs):
+        super().__init__(self, **dct_params, **kwargs)
+        self["--nb-filter-conv-1"] = int(self["--nb-filter-conv-1"])
+        self["--nb-filter-conv-2"] = int(self["--nb-filter-conv-2"])
+        self["--size-filter-conv-1"] = int(self["--size-filter-conv-1"])
+        self["--size-filter-conv-2"] = int(self["--size-filter-conv-2"])
+        self["--size-dense"] = int(self["--size-dense"])
+        self["--learning-rate"] = float(self["--learning-rate"])
+        self["--window-size"] = int(self["--window-size"])
+        self["--attention-span-size"] = int(self["--attention-span-size"])
+        self["--step-size"] = int(self["--step-size"])

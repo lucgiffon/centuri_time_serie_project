@@ -82,9 +82,10 @@ def main():
             outlabels[0, absolute_idx_max_value] = 1
             outlabels[1, absolute_idx_max_value] = max_value_in_episode
         #
-        plt.plot(sweep, color="lime", label="Input Excitatory signal")
-        plt.scatter(np.arange(len(sweep))[outlabels[0].astype(np.bool)], sweep[outlabels[0].astype(np.bool)], color="r", label="Detected events", zorder=5)
-        plt.scatter(np.arange(len(sweep))[sweep_labels[0].astype(np.bool)], sweep[sweep_labels[0].astype(np.bool)], color="b", marker="x", label="Manually labeled events", zorder=10)
+        plt.plot(sweep, color="grey", label="Input Excitatory signal")
+        plt.scatter(np.arange(len(sweep))[outlabels[0].astype(np.bool)], sweep[outlabels[0].astype(np.bool)],edgecolors="red", facecolors="none", color="r", s=80, label="Detected events", zorder=5)
+        plt.scatter(np.arange(len(sweep))[sweep_labels[0].astype(np.bool)], sweep[sweep_labels[0].astype(np.bool)], color="b", s=80, marker="x", label="Manually labeled events", zorder=10)
+        plt.legend()
         plt.show()
 
         data_labels_test_predicted[idx_sweep] = outlabels

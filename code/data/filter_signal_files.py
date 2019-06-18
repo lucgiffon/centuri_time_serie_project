@@ -83,9 +83,10 @@ def process_abf_data(abf_data, ax=None):
     # indexes_values_outside_limits = ac_filtered_abf_data_Y[ac_filtered_abf_data_Y < miny or ac_filtered_abf_data_Y > maxy]
 
     if ax is not None:
-        ax.plot(abf_data.sweepX, abf_data.sweepY, color="c", zorder=-2, label="raw data")
+        ax.plot(abf_data.sweepX, abf_data.sweepY, color="grey", zorder=-2, label="raw data")
         ax.plot(abf_data.sweepX, filtered_abf_data_Y, color="b", zorder=-1, label="high frequencies filtered data")
-        ax.plot(abf_data.sweepX, ac_filtered_abf_data_Y, color="lime", zorder=0, label="AC filtered data")
+        ax.plot(abf_data.sweepX, ac_filtered_abf_data_Y, color="r", zorder=0, label="AC filtered data")
+        # ax.plot(abf_data.sweepX, ac_filtered_abf_data_Y, color="grey", zorder=0, label="Signal data")
 
     return ac_filtered_abf_data_Y
 
@@ -120,7 +121,9 @@ def process_asc_file(file, signal_size, signal_sampling_rate, ax=None):
 
     if ax is not None:
         ax.scatter(all_events_time, all_baselines_at_events - all_amplitudes_at_events, edgecolors="r", facecolors="none", s=80, zorder=1, label="event")
+        ax.scatter(all_events_time, all_baselines_at_events - all_amplitudes_at_events, edgecolors="r", facecolors="none", s=80, zorder=1, label="event")
         ax.scatter(all_events_time, all_baselines_at_events, color='y', s=80, marker='x', zorder=2, label="baseline signal")
+        # ax.scatter(all_events_time, all_baselines_at_events - all_amplitudes_at_events, color="b", marker="x", s=80, zorder=1, label="event")
 
     return cube_events
 
@@ -166,7 +169,8 @@ def get_filtered_signals():
 
             # get the cube of dim n x d x 3 of labels. The 3 labels are: event presence with 1hot vector, amplitude of event, baseline of event
             asc_file = file
-            cube_labels = process_asc_file(asc_file, len(filtered_abf_data_Y), sampling_rate, ax)
+            # cube_labels = process_asc_file(asc_file, len(filtered_abf_data_Y), sampling_rate, ax)
+            cube_labels = process_asc_file(asc_file, len(filtered_abf_data_Y), sampling_rate, None)
 
 
             lst_train["signals"].append(filtered_abf_data_Y)
@@ -183,7 +187,7 @@ def get_filtered_signals():
             runing_mean_abf_dataY = running_mean(filtered_abf_data_Y, running_mean_win)
             maxy = max(runing_mean_abf_dataY) + offset_y
             miny = min(runing_mean_abf_dataY) - offset_y
-            limits = (maxy, miny)
+            limits = (miny, maxy)
             ax.set_ylim(*limits)
             f.suptitle(file.name)
             handles, labels = plt.gca().get_legend_handles_labels()
@@ -214,3 +218,5 @@ def get_filtered_signals():
     return train_data, test_data
 
 
+if __name__ == "__main__":
+    get_filtered_signals()

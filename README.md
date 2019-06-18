@@ -28,6 +28,15 @@ To make sure everything has been done properly, go to the `/code/vizualiation` d
 
 If everything is fine, there should be no error and few plots should show up (around 5).
 
+# Window classification
+
+You'll find a sample code that loads the dataset of windows with their binary label (0 for "no spike", 1 for "spike") and then
+applies a simple classification algorithm on it under `/code/centuri_project/classification/sgd_example.py`.
+
+A more advanced model (1D CNN) is proposed in `/code/centuri_project/classification/cnn_example.py`. You'll find the
+relevant usage guide at the top of the file. The parameters that have been tested are summarized in `/parameters/lazyfile_cnn_classif_windows.yml`
+(this file is a resource file that I, Luc, use in a tierce-party software that builds the command lines out of it. You can still use it as a reference)
+
 # Start coding
 
 If you want to code something new for the project. 

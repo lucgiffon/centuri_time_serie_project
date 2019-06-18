@@ -97,6 +97,8 @@ if __name__ == "__main__":
             plt.title(y[i])
             plt.show()
 
+        # CNN model definition
+        ######################
         inputs = Input(shape=(window_size,1))
         rep = Conv1D(paraman["--nb-filter-conv-1"], paraman["--size-filter-conv-1"])(inputs)
         rep = MaxPooling1D(3)(rep)

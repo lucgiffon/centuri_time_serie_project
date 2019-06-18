@@ -39,8 +39,12 @@ relevant usage guide at the top of the file. The parameters that have been teste
 
 # Event detection
 
-`code/centuri_project/detection/window_classification_detection.py` is a prototype on how to use a keras model.
+`/code/centuri_project/detection/window_classification_detection.py` is a prototype on how to use a keras model
+for a "classification-based" approach of event detection.
 You'll find attached comments explaining the different steps.
+
+`/code/centuri_project/detection/brute_force_detection.py` is a prototype on how to use the mean to perform anomaly detection
+based on the distance between each data point and the windowed mean. 
 
 # Start coding
 

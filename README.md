@@ -37,6 +37,11 @@ A more advanced model (1D CNN) is proposed in `/code/centuri_project/classificat
 relevant usage guide at the top of the file. The parameters that have been tested are summarized in `/parameters/lazyfile_cnn_classif_windows.yml`
 (this file is a resource file that I, Luc, use in a tierce-party software that builds the command lines out of it. You can still use it as a reference)
 
+# Event detection
+
+`code/centuri_project/detection/window_classification_detection.py` is a prototype on how to use a keras model.
+You'll find attached comments explaining the different steps.
+
 # Start coding
 
 If you want to code something new for the project. 
